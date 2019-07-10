@@ -1,8 +1,8 @@
 import React from "react";
-import CounterContainer from "./CounterContainer";
+import Search from "./Search";
 
 const App = () => {
-  return <CounterContainer />;
+  return <Search />;
 };
 
 export default App;
