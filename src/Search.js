@@ -1,15 +1,18 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 const Search = () => {
-  const inputElement = useRef(null);
+  const [query, setQuery] = useState("");
+  const onChange = event => {
+    const { value } = event.target;
+    setQuery(value);
+  };
   const onSubmit = event => {
-    const { value } = inputElement.current;
-    console.log(value);
+    console.log(query);
     event.preventDefault();
   };
 
   return (
     <form onSubmit={onSubmit}>
-      <input ref={inputElement} type="text" />
+      <input onChange={onChange} type="text" />
       <button type="submit">Search</button>
     </form>
   );
