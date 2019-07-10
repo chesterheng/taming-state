@@ -1,8 +1,14 @@
-import React from "react";
-const List = ({ list, onArchive }) => {
+import React, { useState } from "react";
+import { byArchived } from "./Utils";
+
+const List = ({ list }) => {
+  const [archivedItems, setArchivedItems] = useState([]);
+  const onArchive = id => setArchivedItems([...archivedItems, id]);
+  const filteredList = list.filter(byArchived(archivedItems));
+
   return (
     <ul>
-      {list.map(item => (
+      {filteredList.map(item => (
         <li key={item.id}>
           <span>{item.name}</span>
           <span>
