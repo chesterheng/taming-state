@@ -12,7 +12,7 @@ const Search = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <input onChange={onChange} type="text" />
+      <input value={query} onChange={onChange} type="text" />
       <button type="submit">Search</button>
     </form>
   );
