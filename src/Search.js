@@ -1,20 +1,10 @@
-import React, { useState } from "react";
-const Search = () => {
-  const [query, setQuery] = useState("");
-  const onChange = event => {
-    const { value } = event.target;
-    setQuery(value);
-  };
-  const onSubmit = event => {
-    console.log(query);
-    event.preventDefault();
-  };
-
+import React, { Fragment } from "react";
+const Search = ({ query, onChange, children }) => {
   return (
-    <form onSubmit={onSubmit}>
-      <input value={query} onChange={onChange} type="text" />
-      <button type="submit">Search</button>
-    </form>
+    <Fragment>
+      {children}
+      <input type="text" value={query} onChange={onChange} />
+    </Fragment>
   );
 };
 export default Search;

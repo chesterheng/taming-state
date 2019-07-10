@@ -1,8 +1,13 @@
 import React from "react";
-import Search from "./Search";
+import SearchableList from "./SearchableList";
+
+const list = [
+  { id: "0", name: "learn local state" },
+  { id: "1", name: "learn redux" }
+];
 
 const App = () => {
-  return <Search />;
+  return <SearchableList list={list} />;
 };
 
 export default App;
