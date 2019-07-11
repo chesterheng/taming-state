@@ -1,12 +1,12 @@
 import React, { Fragment } from "react";
-const CounterPresenter = props => {
+const CounterPresenter = ({ counter, onIncrement, onDecrement }) => {
   return (
     <Fragment>
-      <p>{props.counter}</p>
-      <button type="button" onClick={props.onIncrement}>
+      <p>{counter}</p>
+      <button type="button" onClick={onIncrement}>
         Increment
       </button>
-      <button type="button" onClick={props.onDecrement}>
+      <button type="button" onClick={onDecrement}>
         Decrement
       </button>
     </Fragment>
