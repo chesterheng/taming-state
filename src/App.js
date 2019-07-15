@@ -1,12 +1,8 @@
 import React from "react";
-import List from "./List";
+import A from "./A";
 
-const list = [
-  { id: "0", name: "learn local state" },
-  { id: "1", name: "learn redux" }
-];
 const App = () => {
-  return <List list={list} />;
+  return <A />;
 };
 
 export default App;
