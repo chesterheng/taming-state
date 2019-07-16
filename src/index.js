@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { combineReducers, createStore } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
 import { Provider, connect } from "react-redux";
+import { createLogger } from "redux-logger";
 import "./index.css";
 
 // action types
@@ -30,15 +31,14 @@ const todoReducer = (state = todos, action) => {
   }
 };
 
-const applyAddTodo = (state, { todo }) => {
-  const newTodo = { ...todo, completed: false };
-  return state.concat(newTodo);
+const applyAddTodo = (state, action) => {
+  const todo = { ...action.todo, completed: false };
+  return [...state, todo];
 };
 
-const applyToggleTodo = (state, { todo }) => {
-  const { id } = todo;
+const applyToggleTodo = (state, action) => {
   return state.map(todo =>
-    todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    todo.id === action.todo.id ? { ...todo, completed: !todo.completed } : todo
   );
 };
 
@@ -86,7 +86,8 @@ const rootReducer = combineReducers({
   filterState: filterReducer
 });
 
-const store = createStore(rootReducer);
+const logger = createLogger();
+const store = createStore(rootReducer, undefined, applyMiddleware(logger));
 
 // components
 
