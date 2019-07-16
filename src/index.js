@@ -1,22 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { combineReducers, createStore } from "redux";
 import "./index.css";
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
-import { createStore, combineReducers } from "redux";
 
-ReactDOM.render(<App />, document.getElementById("root"));
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// action types
 
 const TODO_ADD = "TODO_ADD";
 const TODO_TOGGLE = "TODO_TOGGLE";
 const FILTER_SET = "FILTER_SET";
 
-const todoReducer = (state = [], action) => {
+// reducers
+
+const todos = [
+  { id: "0", name: "learn redux" },
+  { id: "1", name: "learn mobx" }
+];
+
+const todoReducer = (state = todos, action) => {
   switch (action.type) {
     case TODO_ADD: {
       return applyAddTodo(state, action);
@@ -55,6 +55,8 @@ const applySetFilter = (state, action) => {
   return action.filter;
 };
 
+// action creators
+
 const doAddTodo = (id, name) => {
   return {
     type: TODO_ADD,
@@ -76,23 +78,19 @@ const doSetFilter = filter => {
   };
 };
 
+// store
+
 const rootReducer = combineReducers({
   todoState: todoReducer,
   filterState: filterReducer
 });
+
 const store = createStore(rootReducer);
 
-console.log("initial state:");
-console.log(store.getState());
+// view layer
 
-const unsubscribe = store.subscribe(() => {
-  console.log("store update, current state:");
-  console.log(store.getState());
-});
+const TodoApp = () => {
+  return <div>Todo App</div>;
+};
 
-store.dispatch(doAddTodo("0", "learn redux"));
-store.dispatch(doAddTodo("1", "learn mobx"));
-store.dispatch(doToggleTodo("0"));
-store.dispatch(doSetFilter("COMPLETED"));
-
-unsubscribe();
+ReactDOM.render(<TodoApp />, document.getElementById("root"));
