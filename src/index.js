@@ -12,12 +12,15 @@ ReactDOM.render(<App />, document.getElementById("root"));
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
 
+const TODO_ADD = "TODO_ADD";
+const TODO_TOGGLE = "TODO_TOGGLE";
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case "TODO_ADD": {
+    case TODO_ADD: {
       return applyAddTodo(state, action);
     }
-    case "TODO_TOGGLE": {
+    case TODO_TOGGLE: {
       return applyToggleTodo(state, action);
     }
     default:
@@ -25,16 +28,30 @@ const reducer = (state, action) => {
   }
 };
 
-const applyAddTodo = (state, action) => {
-  return state.concat(action.todo);
+const applyAddTodo = (state, { todo }) => {
+  const newTodo = { ...todo, completed: false };
+  return state.concat(newTodo);
 };
 
-const applyToggleTodo = (state, action) => {
+const applyToggleTodo = (state, { todo }) => {
+  const { id } = todo;
   return state.map(todo =>
-    todo.id === action.todo.id
-      ? Object.assign({}, todo, { completed: !todo.completed })
-      : todo
+    todo.id === id ? { ...todo, completed: !todo.completed } : todo
   );
+};
+
+const doAddTodo = (id, name) => {
+  return {
+    type: TODO_ADD,
+    todo: { id, name }
+  };
+};
+
+const doToggleTodo = id => {
+  return {
+    type: TODO_TOGGLE,
+    todo: { id }
+  };
 };
 
 const store = createStore(reducer, []);
@@ -46,19 +63,8 @@ const unsubscribe = store.subscribe(() => {
   console.log(store.getState());
 });
 
-store.dispatch({
-  type: "TODO_ADD",
-  todo: { id: "0", name: "learn redux", completed: false }
-});
-
-store.dispatch({
-  type: "TODO_ADD",
-  todo: { id: "1", name: "learn mobx", completed: false }
-});
-
-store.dispatch({
-  type: "TODO_TOGGLE",
-  todo: { id: "0" }
-});
+store.dispatch(doAddTodo("0", "learn redux"));
+store.dispatch(doAddTodo("1", "learn mobx"));
+store.dispatch(doToggleTodo("0"));
 
 unsubscribe();
