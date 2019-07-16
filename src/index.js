@@ -87,10 +87,43 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer);
 
-// view layer
+// components
 
-const TodoApp = () => {
-  return <div>Todo App</div>;
+const TodoApp = ({ todos, onToggleTodo }) => {
+  return <TodoList todos={todos} onToggleTodo={onToggleTodo} />;
 };
 
-ReactDOM.render(<TodoApp />, document.getElementById("root"));
+const TodoList = ({ todos, onToggleTodo }) => {
+  return (
+    <div>
+      {todos.map(todo => (
+        <TodoItem key={todo.id} todo={todo} onToggleTodo={onToggleTodo} />
+      ))}
+    </div>
+  );
+};
+
+const TodoItem = ({ todo, onToggleTodo }) => {
+  const { name, id, completed } = todo;
+  return (
+    <div>
+      {name}
+      <button type="button" onClick={() => onToggleTodo(id)}>
+        {completed ? "Incomplete" : "Complete"}
+      </button>
+    </div>
+  );
+};
+
+const render = () => {
+  ReactDOM.render(
+    <TodoApp
+      todos={store.getState().todoState}
+      onToggleTodo={id => store.dispatch(doToggleTodo(id))}
+    />,
+    document.getElementById("root")
+  );
+};
+
+store.subscribe(render);
+render();
