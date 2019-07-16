@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
@@ -14,8 +14,9 @@ serviceWorker.unregister();
 
 const TODO_ADD = "TODO_ADD";
 const TODO_TOGGLE = "TODO_TOGGLE";
+const FILTER_SET = "FILTER_SET";
 
-const reducer = (state, action) => {
+const todoReducer = (state = [], action) => {
   switch (action.type) {
     case TODO_ADD: {
       return applyAddTodo(state, action);
@@ -40,6 +41,20 @@ const applyToggleTodo = (state, { todo }) => {
   );
 };
 
+const filterReducer = (state = "SHOW_ALL", action) => {
+  switch (action.type) {
+    case FILTER_SET: {
+      return applySetFilter(state, action);
+    }
+    default:
+      return state;
+  }
+};
+
+const applySetFilter = (state, action) => {
+  return action.filter;
+};
+
 const doAddTodo = (id, name) => {
   return {
     type: TODO_ADD,
@@ -54,7 +69,19 @@ const doToggleTodo = id => {
   };
 };
 
-const store = createStore(reducer, []);
+const doSetFilter = filter => {
+  return {
+    type: FILTER_SET,
+    filter
+  };
+};
+
+const rootReducer = combineReducers({
+  todoState: todoReducer,
+  filterState: filterReducer
+});
+const store = createStore(rootReducer);
+
 console.log("initial state:");
 console.log(store.getState());
 
@@ -66,5 +93,6 @@ const unsubscribe = store.subscribe(() => {
 store.dispatch(doAddTodo("0", "learn redux"));
 store.dispatch(doAddTodo("1", "learn mobx"));
 store.dispatch(doToggleTodo("0"));
+store.dispatch(doSetFilter("COMPLETED"));
 
 unsubscribe();
