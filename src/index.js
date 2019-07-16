@@ -90,26 +90,26 @@ const store = createStore(rootReducer);
 
 // components
 
-const TodoApp = ({ todos, doToggleTodo }) => {
-  return <TodoList todos={todos} onToggleTodo={doToggleTodo} />;
+const TodoApp = () => {
+  return <ConnectedTodoList />;
 };
 
-const TodoList = ({ todos, onToggleTodo }) => {
+const TodoList = ({ todos }) => {
   return (
     <div>
-      {todos.map(todo => (
-        <TodoItem key={todo.id} todo={todo} onToggleTodo={onToggleTodo} />
+      {(todos || []).map(todo => (
+        <ConnectedTodoItem key={todo.id} pTodo={todo} />
       ))}
     </div>
   );
 };
 
-const TodoItem = ({ todo, onToggleTodo }) => {
-  const { name, id, completed } = todo;
+const TodoItem = ({ pTodo, doToggleTodo }) => {
+  const { name, id, completed } = pTodo;
   return (
     <div>
       {name}
-      <button type="button" onClick={() => onToggleTodo(id)}>
+      <button type="button" onClick={() => doToggleTodo(id)}>
         {completed ? "Incomplete" : "Complete"}
       </button>
     </div>
@@ -124,14 +124,15 @@ const mapStateToProps = state => {
   };
 };
 
-const ConnectedTodoApp = connect(
-  mapStateToProps,
+const ConnectedTodoList = connect(mapStateToProps)(TodoList);
+const ConnectedTodoItem = connect(
+  null,
   { doToggleTodo }
-)(TodoApp);
+)(TodoItem);
 
 ReactDOM.render(
   <Provider store={store}>
-    <ConnectedTodoApp />
+    <TodoApp />
   </Provider>,
   document.getElementById("root")
 );
