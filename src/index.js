@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { combineReducers, createStore } from "redux";
+import { Provider, connect } from "react-redux";
 import "./index.css";
 
 // action types
@@ -89,8 +90,8 @@ const store = createStore(rootReducer);
 
 // components
 
-const TodoApp = ({ todos, onToggleTodo }) => {
-  return <TodoList todos={todos} onToggleTodo={onToggleTodo} />;
+const TodoApp = ({ todos, doToggleTodo }) => {
+  return <TodoList todos={todos} onToggleTodo={doToggleTodo} />;
 };
 
 const TodoList = ({ todos, onToggleTodo }) => {
@@ -115,15 +116,22 @@ const TodoItem = ({ todo, onToggleTodo }) => {
   );
 };
 
-const render = () => {
-  ReactDOM.render(
-    <TodoApp
-      todos={store.getState().todoState}
-      onToggleTodo={id => store.dispatch(doToggleTodo(id))}
-    />,
-    document.getElementById("root")
-  );
+// Connecting React and Redux
+
+const mapStateToProps = state => {
+  return {
+    todos: state.todoState
+  };
 };
 
-store.subscribe(render);
-render();
+const ConnectedTodoApp = connect(
+  mapStateToProps,
+  { doToggleTodo }
+)(TodoApp);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedTodoApp />
+  </Provider>,
+  document.getElementById("root")
+);
