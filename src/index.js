@@ -104,6 +104,16 @@ const doSetFilter = filter => {
   };
 };
 
+// selectors
+
+const getTodosAsIds = state => {
+  return state.todoState.ids;
+};
+
+const getTodo = (state, todoId) => {
+  return state.todoState.entities[todoId];
+};
+
 // store
 
 const rootReducer = combineReducers({
@@ -146,13 +156,13 @@ const TodoItem = ({ todo, doToggleTodo }) => {
 
 const mapStateToPropsList = state => {
   return {
-    todosAsIds: state.todoState.ids
+    todosAsIds: getTodosAsIds(state)
   };
 };
 
 const mapStateToPropsItem = (state, props) => {
   return {
-    todo: state.todoState.entities[props.pTodoId]
+    todo: getTodo(state, props.pTodoId)
   };
 };
 
