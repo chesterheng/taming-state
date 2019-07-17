@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { Provider, connect } from "react-redux";
 import { createLogger } from "redux-logger";
 import { schema, normalize } from "normalizr";
+import uuid from "uuid/v4";
 import "./index.css";
+
+// filters
+
+const VISIBILITY_FILTERS = {
+  SHOW_COMPLETED: item => item.completed,
+  SHOW_INCOMPLETED: item => !item.completed,
+  SHOW_ALL: item => true
+};
 
 // schemas
 
@@ -19,16 +28,16 @@ const FILTER_SET = "FILTER_SET";
 // reducers
 
 const todos = [
-  { id: "1", name: "Redux Standalone with advanced Actions" },
-  { id: "2", name: "Redux Standalone with advanced Reducers" },
-  { id: "3", name: "Bootstrap App with Redux" },
-  { id: "4", name: "Naive Todo with React and Redux" },
-  { id: "5", name: "Sophisticated Todo with React and Redux" },
-  { id: "6", name: "Connecting State Everywhere" },
-  { id: "7", name: "Todo with advanced Redux" },
-  { id: "8", name: "Todo but more Features" },
-  { id: "9", name: "Todo with Notifications" },
-  { id: "10", name: "Hacker News with Redux" }
+  { id: uuid(), name: "Redux Standalone with advanced Actions" },
+  { id: uuid(), name: "Redux Standalone with advanced Reducers" },
+  { id: uuid(), name: "Bootstrap App with Redux" },
+  { id: uuid(), name: "Naive Todo with React and Redux" },
+  { id: uuid(), name: "Sophisticated Todo with React and Redux" },
+  { id: uuid(), name: "Connecting State Everywhere" },
+  { id: uuid(), name: "Todo with advanced Redux" },
+  { id: uuid(), name: "Todo but more Features" },
+  { id: uuid(), name: "Todo with Notifications" },
+  { id: uuid(), name: "Hacker News with Redux" }
 ];
 
 const normalizedTodos = normalize(todos, [todoSchema]);
@@ -107,7 +116,10 @@ const doSetFilter = filter => {
 // selectors
 
 const getTodosAsIds = state => {
-  return state.todoState.ids;
+  return state.todoState.ids
+    .map(id => state.todoState.entities[id])
+    .filter(VISIBILITY_FILTERS[state.filterState])
+    .map(todo => todo.id);
 };
 
 const getTodo = (state, todoId) => {
@@ -127,7 +139,59 @@ const store = createStore(rootReducer, undefined, applyMiddleware(logger));
 // components
 
 const TodoApp = () => {
-  return <ConnectedTodoList />;
+  return (
+    <div>
+      <ConnectedFilter />
+      <ConnectedTodoCreate />
+      <ConnectedTodoList />
+    </div>
+  );
+};
+
+const Filter = ({ doSetFilter }) => {
+  return (
+    <div>
+      {" "}
+      Show
+      <button type="button" onClick={() => doSetFilter("SHOW_ALL")}>
+        All
+      </button>
+      <button type="button" onClick={() => doSetFilter("SHOW_COMPLETED")}>
+        Completed
+      </button>
+      <button type="button" onClick={() => doSetFilter("SHOW_INCOMPLETED")}>
+        Incompleted
+      </button>
+    </div>
+  );
+};
+
+const TodoCreate = ({ doAddTodo }) => {
+  const [value, setValue] = useState("");
+
+  const onChangeName = event => {
+    setValue(event.target.value);
+  };
+
+  const onCreateTodo = event => {
+    doAddTodo(uuid(), value);
+    setValue("");
+    event.preventDefault();
+  };
+
+  return (
+    <div>
+      <form onSubmit={onCreateTodo}>
+        <input
+          type="text"
+          placeholder="Add Todo..."
+          value={value}
+          onChange={onChangeName}
+        />
+        <button type="submit">Add</button>
+      </form>
+    </div>
+  );
 };
 
 const TodoList = ({ todosAsIds }) => {
@@ -171,6 +235,14 @@ const ConnectedTodoItem = connect(
   mapStateToPropsItem,
   { doToggleTodo }
 )(TodoItem);
+const ConnectedTodoCreate = connect(
+  null,
+  { doAddTodo }
+)(TodoCreate);
+const ConnectedFilter = connect(
+  null,
+  { doSetFilter }
+)(Filter);
 
 ReactDOM.render(
   <Provider store={store}>
