@@ -25,11 +25,16 @@ const COLUMNS = {
   }
 };
 
-const Stories = ({ stories }) => (
+const Stories = ({ stories, onArchive }) => (
   <div className="stories">
     <StoriesHeader columns={COLUMNS} />
     {(stories || []).map(story => (
-      <Story key={story.objectID} story={story} columns={COLUMNS} />
+      <Story
+        key={story.objectID}
+        story={story}
+        columns={COLUMNS}
+        onArchive={onArchive}
+      />
     ))}
   </div>
 );
