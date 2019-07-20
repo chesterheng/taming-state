@@ -28,16 +28,11 @@ const COLUMNS = {
   }
 };
 
-const Stories = ({ stories, doArchiveStory }) => (
+const Stories = ({ stories }) => (
   <div className="stories">
     <StoriesHeader columns={COLUMNS} />
     {(stories || []).map(story => (
-      <Story
-        key={story.objectID}
-        story={story}
-        columns={COLUMNS}
-        onArchive={doArchiveStory}
-      />
+      <Story key={story.objectID} story={story} columns={COLUMNS} />
     ))}
   </div>
 );
@@ -46,7 +41,4 @@ const mapStateToProps = state => ({
   stories: getReadableStories(state)
 });
 
-export default connect(
-  mapStateToProps,
-  { doArchiveStory }
-)(Stories);
+export default connect(mapStateToProps)(Stories);
