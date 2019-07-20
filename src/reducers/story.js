@@ -16,10 +16,10 @@ const INITIAL_STATE = [
     objectID: 1
   }
 ];
-function storyReducer(state = INITIAL_STATE, action) {
+const storyReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     default:
       return state;
   }
-}
+};
 export default storyReducer;
